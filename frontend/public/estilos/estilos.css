@@ -60,7 +60,11 @@ h6{
     height: 30%;
     background-color: #c2c2c22d;
     padding: 13px;
-    border-radius: 8px;
+    display: flex;
+    justify-content: space-between; /* Espacia los elementos para evitar el colapso */
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap; 
 }
 
 #bdetalles{
@@ -277,7 +281,9 @@ nav{
     body{
         padding: 0.5%;
     }
-    
+    #weather{
+        display: none;
+    }
    
 }
 
@@ -379,4 +385,28 @@ nav{
 .datos_finca_inicio{
     margin: 10px;
     padding:  10px;
+}
+
+nueva_ventana{
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    background-color: #525050;
+    color: white;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
+}
+#weather {
+   
+    background-color: #cec2c2;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    height: 30%;
+    text-align: center;
 }

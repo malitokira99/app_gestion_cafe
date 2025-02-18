@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.99">
     <title>gestion cafetera</title>
-    <link rel="stylesheet" href="estilos/estilos.css">
-    <script src="scrpits/code.js"></script>
+    <link rel="stylesheet" href="/frontend/public/estilos/estilos.css">
+    <script src="/frontend/public/scrpits/inicio_code.js"></script>
     <script src="inicio.js" defer></script>
-    <link rel="icon" type="cafe/png" href="static/ramita.png">
-    
+    <style>
+       
+    </style>
 </head>
 <body>
     <header>
@@ -23,13 +24,19 @@
             </ul>
         </nav>
     </header>
-    <section id="info_finca">
-        <h3>nombre de la finca</h3>
-        <h3>area metros cuadrados</h3>
-        <h3>departamento</h3>
-        <h3>altura msnm</h3>
-        <h3>municipio</h3>
-        <button id="bdetalles">Detalles</button>
+    <section id="info_finca" >
+        <div style=" width:60%;">
+        <h1 style="color: antiquewhite;">Finca La Isla</h1>
+        <h3>area: 20,000m2</h3>
+        <h3>altura msnm: 1,430</h3>
+        <h3>departamento: Tolima</h3>
+        <h3>municipio: Líbano</h3>
+        <button id="bdetalles" style="width: max-content; padding: 5px;">Detalles</button>
+    </div>
+            <div id="weather">
+                <h1>Clima Actual en el Líbano Tólima</h1>
+            </div>
+        
     </section>
     <section id="finta">
         <div id="accesof">
@@ -72,7 +79,7 @@
                         <div class="division" id="semana1">Semana 1</div>
                         <div class="division" id="semana2">Semana 2</div>
                         <div class="division" id="semana3">Semana 3</div>
-                        
+                        <div class="division" id="semana4">Semana 4</div>
                     </div>
                 </div>
             </div>
@@ -99,12 +106,12 @@
                             var barraCaramelo = document.createElement('div');
                             barraCaramelo.className = 'barra_caramelo barra';
                             barraCaramelo.style.height = (item.ingresos / maxValor * 90) + '%';
-                            barraCaramelo.setAttribute('data-value', item.ingresos.toLocaleString() + ' △ COP');
+                            barraCaramelo.setAttribute('data-value', parseFloat(item.ingresos).toLocaleString() + ' △ COP');
     
                             var barraCafe = document.createElement('div');
                             barraCafe.className = 'barra_cafe barra';
                             barraCafe.style.height = (item.gastos / maxValor * 90) + '%';
-                            barraCafe.setAttribute('data-value', item.gastos.toLocaleString() + ' 🔻 COP');
+                            barraCafe.setAttribute('data-value', parseFloat(item.gastos).toLocaleString() + ' 🔻 COP');
     
                             var division = document.createElement('div');
                             division.className = 'division';
