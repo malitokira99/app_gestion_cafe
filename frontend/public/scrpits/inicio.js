@@ -1,5 +1,5 @@
 function actualizarGrafico(mes) {
-    fetch('http://localhost:4000/datos/' + mes)
+    fetch('http://localhost:3000/datos/' + mes)
         .then(response => response.json())
         .then(data => {
             var ingresos = 0;

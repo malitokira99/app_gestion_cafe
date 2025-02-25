@@ -6,6 +6,7 @@
     <title>actividades</title>
     <script src="code.js"></script>
     <link rel="stylesheet" href="estilos/estilolote.css">
+    <link rel="icon" href="static/ramita.png">
 </head>
 <body>
     <header>
@@ -22,7 +23,8 @@
         </nav>
    </header>
     <div class="formulario">
-        <form action="/actividades" method="post">
+        <form id="miFormulario" action="http://localhost:3000/actividades" method="post">
+
             <!-- Aquí van los campos del formulario -->
              
             <label for="nombre">Actividad</label>
@@ -45,9 +47,9 @@
             <input type="number" id="costo_total" name="costo_total"><br>
             <label for="observa">Observaciones</label>
             <textarea name="observaciones" id="observaciones"></textarea><br>
-            <input type="submit" value="Guardar" id="btlote">
+            <input type="submit" value="Guardar" id="btlote" readonly>
             <br>
-            <a id="bdetalles"> revisar o eliminar registro</a>
+            <a id="bdetalles"> eliminar registro</a>
         
         </form>
         <br>
@@ -71,7 +73,7 @@
     
         async function obtenerFechas() {
             try {
-                const response = await fetch('http://localhost:4000/fechasActividades');
+                const response = await fetch('http://localhost:3000/fechasActividades');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
@@ -86,7 +88,6 @@
                     fechaElement.innerHTML = `
                         <span class="span_f">${fechaCorta}</span>
                         <div class="icons">
-                            <i class="refresh-icon">🔄</i>
                             <i class="delete-icon" data-id="${fecha.id}">🗑️</i>
                         </div>
                         <br>
@@ -118,7 +119,7 @@
                 return;
             }
             try {
-                const response = await fetch(`http://localhost:4000/fechasActividades/${id}`, {
+                const response = await fetch(`http://localhost:3000/fechasActividades/${id}`, {
                     method: 'DELETE'
                 });
                 const result = await response.text();
@@ -133,6 +134,28 @@
         obtenerFechas();
         
     </script>
+    <script>
+        //para recargra la pagina despus de hacer post
+        document.getElementById("miFormulario").addEventListener("submit", function(event) {
+    event.preventDefault(); // Evitar el envío predeterminado
+    const formData = new FormData(this);
     
+    fetch(this.action, {
+        method: this.method,
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            alert("Datos enviados con éxito.");
+            window.location.reload(); // Recargar la página
+        } else {
+            alert("Error al enviar los datos.");
+        }
+    }).catch(error => {
+        alert("Error al enviar los datos.");
+        console.error("Error:", error);
+    });
+});
+
+    </script>
 </body>
 </html>

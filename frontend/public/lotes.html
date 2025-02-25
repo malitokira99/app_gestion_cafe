@@ -6,6 +6,7 @@
     <title>Lotes</title>
     <link rel="stylesheet" href="/frontend/public/estilos/estilolote.css">
     <script src="scrpits/inicio_code.js"></script>
+    
 </head>
 <body>
     <header>
@@ -91,7 +92,7 @@
     
         async function obtenerLotes() {
             try {
-                const response = await fetch('http://localhost:4000/fechasLotes');
+                const response = await fetch('http://localhost:3000/fechasLotes');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
@@ -150,7 +151,7 @@
                 return;
             }
             try {
-                const response = await fetch(`http://localhost:4000/fechasLotes/${id}`, {
+                const response = await fetch(`http://localhost:3000/fechasLotes/${id}`, {
                     method: 'DELETE'
                 });
                 const result = await response.text();
@@ -168,7 +169,7 @@
 <script>
 // Función para obtener y mostrar los lotes
 function obtenerLotes() {
-    fetch('http://localhost:4000/lotesa')
+    fetch('http://localhost:3000/lotesa')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error en la solicitud');
@@ -206,7 +207,7 @@ function obtenerLotes() {
         inputs.forEach(input => {
             datosActualizados[input.getAttribute('data-campo')] = input.value;
         });
-        fetch(`http://localhost:4000/actualizar-lote/${id}`, {
+        fetch(`http://localhost:3000/actualizar-lote/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
