@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=0.99">
     <title>gestion cafetera</title>
     <link rel="stylesheet" href="estilos/estilos.css">
-    <script src="scrpits/inicio_code.js"></script>
-    <script src="scrpits/inicio.js" defer></script>
+    <script src="scrpits/code.js"></script>
+    <script src="inicio.js" defer></script>
+    <style>
+       
+    </style>
 </head>
 <body>
     <header>
@@ -57,13 +60,13 @@
             </form>
         </div>
         <div id="festado">
-            <div id="fnegativo">
-                <h5>gastos</h5>
-                <h6 id="gastos"> - COP 0 </h6>
-            </div>
             <div id="fpositivo">
                 <h5>ingresos</h5>
                 <h6 id="ingresos"> + COP 0 </h6>
+            </div>
+            <div id="fnegativo">
+                <h5>gastos</h5>
+                <h6 id="gastos"> - COP 0 </h6>
             </div>
         </div>
         <div class="grafico_barras">
@@ -83,7 +86,65 @@
         </div>
     
         <script>
-            
+            function actualizarGrafico(mes) {
+                fetch('http://localhost:4000/datos')
+                    .then(response => response.json())
+                    .then(data => {
+                        let ingresos = 0;
+                        let gastos = 0;
+                        const areaBarras = document.getElementById('area_barras');
+                        areaBarras.innerHTML = ''; // Limpiar gráfico anterior
+
+                        // Filtrar datos para el mes seleccionado
+                        const datosFiltrados = data.filter(item => item.mes.toLowerCase() === mes);
+
+                        // Asegurar que se procesen todas las semanas (1 a 4)
+                        const semanas = [1, 2, 3, 4];
+                        const maxIngreso = Math.max(...datosFiltrados.map(item => item.ingresos), 0);
+                        const maxGasto = Math.max(...datosFiltrados.map(item => item.gastos), 0);
+                        const maxValor = Math.max(maxIngreso, maxGasto);
+
+                        semanas.forEach(semana => {
+                            const datosSemana = datosFiltrados.find(item => item.semana === semana) || { ingresos: 0, gastos: 0 };
+
+                            ingresos += parseFloat(datosSemana.ingresos || 0);
+                            gastos += parseFloat(datosSemana.gastos || 0);
+
+                            const barraCaramelo = document.createElement('div');
+                            barraCaramelo.className = 'barra_caramelo barra';
+                            barraCaramelo.style.height = (datosSemana.ingresos / maxValor * 90) + '%';
+                            barraCaramelo.setAttribute('data-value', `+ COP ${parseFloat(datosSemana.ingresos || 0).toLocaleString()}`);
+
+                            const barraCafe = document.createElement('div');
+                            barraCafe.className = 'barra_cafe barra';
+                            barraCafe.style.height = (datosSemana.gastos / maxValor * 90) + '%';
+                            barraCafe.setAttribute('data-value', `- COP ${parseFloat(datosSemana.gastos || 0).toLocaleString()}`);
+
+                            const division = document.createElement('div');
+                            division.className = 'division';
+                            division.appendChild(barraCaramelo);
+                            division.appendChild(barraCafe);
+
+                            areaBarras.appendChild(division);
+                        });
+
+                        document.getElementById('ingresos').innerText = `+ COP ${ingresos.toLocaleString()}`;
+                        document.getElementById('gastos').innerText = `- COP ${gastos.toLocaleString()}`;
+                    })
+                    .catch(error => console.error('Error al cargar datos:', error));
+            }
+
+            document.getElementById('meses').addEventListener('change', function() {
+                const mes = this.value;
+                actualizarGrafico(mes);
+            });
+
+            // Mostrar datos del mes actual al cargar la interfaz
+            document.addEventListener('DOMContentLoaded', function() {
+                const mesActual = new Date().toLocaleString('es-ES', { month: 'long' }).toLowerCase();
+                document.getElementById('meses').value = mesActual;
+                actualizarGrafico(mesActual);
+            });
         </script>
         </section>
     </section>
@@ -99,7 +160,13 @@
        </div>
     </div>
     <script>
-       
+        document.getElementById("bdetalles").addEventListener('click', function() {
+            document.getElementById('detalles_inicio').style.display = 'block';
+        });
+
+        document.getElementById('cerrarBtn').addEventListener('click', function() {
+            document.getElementById('detalles_inicio').style.display = 'none';
+        });
     </script>
 </body>
 </html>

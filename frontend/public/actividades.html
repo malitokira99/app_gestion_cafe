@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>actividades</title>
-    <script src="code.js"></script>
+    <script src="scrpits/code.js"></script>
     <link rel="stylesheet" href="estilos/estilolote.css">
-    <link rel="icon" href="static/ramita.png">
 </head>
 <body>
     <header>
@@ -14,17 +13,17 @@
         <nav style="display: grid;">
            <h2 id="titulo" style="margin: 0;">actividades</h2>
            <button  class="amburgesa" onclick="accion()"><h1>☕</h1></button>
-        <ul id="menu " style="margin-top: 0;">
-           <a href="inicio.html" class="menu oculto" >inicio</a>
-           <a href="lotes.html" class="menu oculto" >Lotes</a>
-           <a href="inventario.html" class="menu oculto" >inventario</a>
-           <a href="ingresosVSgastos.html" class="menu oculto" >ingresos y gastos</a>
+        <ul id="menu" style="margin-top: 0;">
+           <li><a href="inicio.html" class="menu oculto">Inicio</a></li>
+           <li><a href="lotes.html" class="menu oculto">Lotes</a></li>
+           <li><a href="inventario.html" class="menu oculto">Inventario</a></li>
+           <li><a href="ingresosVSgastos.html" class="menu oculto">Ingresos y Gastos</a></li>
+        </ul>
         </ul>
         </nav>
    </header>
     <div class="formulario">
-        <form id="miFormulario" action="http://localhost:3000/actividades" method="post">
-
+        <form action="/actividades" method="post">
             <!-- Aquí van los campos del formulario -->
              
             <label for="nombre">Actividad</label>
@@ -47,9 +46,9 @@
             <input type="number" id="costo_total" name="costo_total"><br>
             <label for="observa">Observaciones</label>
             <textarea name="observaciones" id="observaciones"></textarea><br>
-            <input type="submit" value="Guardar" id="btlote" readonly>
+            <input type="submit" value="Guardar" id="btlote">
             <br>
-            <a id="bdetalles"> eliminar registro</a>
+            <a id="bdetalles"> revisar o eliminar registro</a>
         
         </form>
         <br>
@@ -59,6 +58,25 @@
         <span class="cerrar" id="cerrarBtn">&times;</span>
         <!-- Los registros se agregarán aquí dinámicamente -->
     </div>
+<div class="detalles_crud" id="nueva_ventana" style="display: none;">
+    <span class="cerrar" id="cerrarNuevaVentana">&times;</span>
+    <h3 style="color: #f2f2f2;">Actualizar Actividades</h3>
+    <table id="actividades-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th>ID</th>
+                <th>Actividad</th>
+                <th>Responsable</th>
+                <th>Jornales</th>
+                <th>Insumo Utilizado</th>
+                <th>Fecha</th>
+                <th>Costo Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 
     <script>
@@ -73,7 +91,7 @@
     
         async function obtenerFechas() {
             try {
-                const response = await fetch('http://localhost:3000/fechasActividades');
+                const response = await fetch('http://localhost:4000/fechasActividades');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
@@ -88,6 +106,7 @@
                     fechaElement.innerHTML = `
                         <span class="span_f">${fechaCorta}</span>
                         <div class="icons">
+                            <i class="refresh-icon">🔄</i>
                             <i class="delete-icon" data-id="${fecha.id}">🗑️</i>
                         </div>
                         <br>
@@ -100,6 +119,15 @@
                     icon.addEventListener('click', function() {
                         const id = this.getAttribute('data-id');
                         eliminarFecha(id);
+                    });
+                });
+
+                // Añadir eventos de clic a los íconos de refresco
+                document.querySelectorAll('.refresh-icon').forEach(icon => {
+                    icon.addEventListener('click', function() {
+                        document.getElementById('nueva_ventana').style.display = 'block';
+                        document.getElementById('detalles_inicio').style.display = 'none';
+                        obtenerActividades(); // Llamar a la función para cargar actividades
                     });
                 });
 
@@ -119,7 +147,7 @@
                 return;
             }
             try {
-                const response = await fetch(`http://localhost:3000/fechasActividades/${id}`, {
+                const response = await fetch(`http://localhost:4000/fechasActividades/${id}`, {
                     method: 'DELETE'
                 });
                 const result = await response.text();
@@ -134,28 +162,75 @@
         obtenerFechas();
         
     </script>
-    <script>
-        //para recargra la pagina despus de hacer post
-        document.getElementById("miFormulario").addEventListener("submit", function(event) {
-    event.preventDefault(); // Evitar el envío predeterminado
-    const formData = new FormData(this);
-    
-    fetch(this.action, {
-        method: this.method,
-        body: formData
-    }).then(response => {
-        if (response.ok) {
-            alert("Datos enviados con éxito.");
-            window.location.reload(); // Recargar la página
-        } else {
-            alert("Error al enviar los datos.");
-        }
-    }).catch(error => {
-        alert("Error al enviar los datos.");
-        console.error("Error:", error);
+<script>
+    // Evento para abrir la ventana de actividades al pulsar el ícono refresh-icon
+    document.querySelectorAll('.refresh-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            document.getElementById('nueva_ventana').style.display = 'block';
+            document.getElementById('detalles_inicio').style.display = 'none'; // Ocultar detalles
+            obtenerActividades(); // Llamar a la función para cargar actividades
+        });
     });
-});
 
-    </script>
+    // Evento para cerrar la ventana de actividades
+    document.getElementById('cerrarNuevaVentana').addEventListener('click', function() {
+        document.getElementById('nueva_ventana').style.display = 'none';
+    });
+
+    // Función para obtener y mostrar las actividades
+    async function obtenerActividades() {
+        try {
+            const response = await fetch('http://localhost:4000/actividadesa');
+            if (!response.ok) {
+                throw new Error('Error en la solicitud');
+            }
+            const data = await response.json();
+            console.log('Datos recibidos:', data); // Depuración
+            const tableBody = document.getElementById('actividades-table').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; // Limpiar contenido previo
+            data.forEach(actividad => {
+                const fechaRealizacion = new Date(actividad.fecha_realizacion);
+                const fechaFormateada = fechaRealizacion.toISOString().split('T')[0]; // Formato yyyy-MM-dd
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${actividad.id}</td>
+                    <td><input type="text" value="${actividad.nombre_actividad}" data-id="${actividad.id}" data-campo="nombre_actividad"></td>
+                    <td><input type="text" value="${actividad.nombre_realizador}" data-id="${actividad.id}" data-campo="nombre_realizador"></td>
+                    <td><input type="number" value="${actividad.jornales}" data-id="${actividad.id}" data-campo="jornales"></td>
+                    <td><input type="text" value="${actividad.insumo_utilizado}" data-id="${actividad.id}" data-campo="insumo_utilizado"></td>
+                    <td><input type="date" value="${fechaFormateada}" data-id="${actividad.id}" data-campo="fecha_realizacion"></td>
+                    <td><input type="number" value="${actividad.costo_total}" data-id="${actividad.id}" data-campo="costo_total"></td>
+                    <td><button onclick="actualizarActividad(${actividad.id})">Actualizar</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error al obtener las actividades:', error);
+        }
+    }
+
+    // Función para actualizar una actividad
+    function actualizarActividad(id) {
+        const inputs = document.querySelectorAll(`input[data-id="${id}"]`);
+        const datosActualizados = {};
+        inputs.forEach(input => {
+            datosActualizados[input.getAttribute('data-campo')] = input.value;
+        });
+        fetch(`http://localhost:4000/actualizar-actividad/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosActualizados)
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                obtenerActividades(); // Recargar actividades después de actualizar
+            })
+            .catch(error => console.error('Error al actualizar la actividad:', error));
+    }
+</script>
+    
 </body>
 </html>
