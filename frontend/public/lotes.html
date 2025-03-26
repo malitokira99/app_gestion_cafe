@@ -91,7 +91,7 @@
     
         async function obtenerLotes() {
             try {
-                const response = await fetch('http://localhost:4000/fechasLotes');
+                const response = await fetch('http://localhost:4000/fechasLotes/:id');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
